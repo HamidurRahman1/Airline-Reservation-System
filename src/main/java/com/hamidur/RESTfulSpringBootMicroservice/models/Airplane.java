@@ -1,5 +1,8 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "airplanes")
@@ -23,7 +27,7 @@ import javax.persistence.Table;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class Airplane
+public class Airplane implements Serializable
 {
     @Id
     @Column(name = "airplane_id")
@@ -32,6 +36,7 @@ public class Airplane
     @Column(name = "airplane_name")
     private String airplaneName;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "airline_id", name = "airline_id")
     private Airline airline;

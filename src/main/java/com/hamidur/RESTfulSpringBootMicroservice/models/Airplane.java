@@ -13,26 +13,26 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Set;
 
 @Entity
-@Table(name = "airlines")
+@Table(name = "airplanes")
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Airline
+public class Airplane
 {
     @Id
-    @Column(name = "airline_id")
+    @Column(name = "airplane_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer airlineId;
-    @Column(name = "airline_name")
-    private String airlineName;
+    private Integer airplaneId;
+    @Column(name = "airplane_name")
+    private String airplaneName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "airline")
-    private Set<Airplane> airplanes;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "airline_id", name = "airline_id")
+    private Airline airline;
 }

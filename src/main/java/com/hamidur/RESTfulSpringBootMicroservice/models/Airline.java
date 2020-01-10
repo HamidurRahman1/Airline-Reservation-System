@@ -1,13 +1,6 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,19 +8,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "airlines")
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
-@EqualsAndHashCode
 public class Airline implements Serializable
 {
     @Id
@@ -40,4 +28,51 @@ public class Airline implements Serializable
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "airline")
     private Set<Airplane> airplanes;
+
+    public Integer getAirlineId() {
+        return airlineId;
+    }
+
+    public void setAirlineId(Integer airlineId) {
+        this.airlineId = airlineId;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+    public Set<Airplane> getAirplanes() {
+        return airplanes;
+    }
+
+    public void setAirplanes(Set<Airplane> airplanes) {
+        this.airplanes = airplanes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Airline)) return false;
+        Airline airline = (Airline) o;
+        return Objects.equals(getAirlineId(), airline.getAirlineId()) &&
+                Objects.equals(getAirlineName(), airline.getAirlineName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAirlineId(), getAirlineName());
+    }
+
+    @Override
+    public String toString() {
+        return "Airline{" +
+                "airlineId=" + airlineId +
+                ", airlineName='" + airlineName + '\'' +
+                ", airplanes=" + airplanes +
+                '}';
+    }
 }

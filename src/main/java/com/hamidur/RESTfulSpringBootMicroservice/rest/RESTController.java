@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +43,13 @@ public class RESTController
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(value = "/airport/{airportName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Airport> getAirportByName(@PathVariable String airportName)
+    {
+        Airport airport = airportRepository.findByAirportNameIgnoreCase(airportName);
+        return airport != null ? new ResponseEntity<>(airport, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping(value = "/airlines", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airline>> getAirlines()
     {
@@ -53,6 +61,13 @@ public class RESTController
             return new ResponseEntity<>(airlineList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/airline/{airlineName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Airline> getAirlineByName(@PathVariable String airlineName)
+    {
+        Airline airline = airlineRepository.findByAirlineNameIgnoreCase(airlineName);
+        return airline != null ? new ResponseEntity<>(airline, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/airplanes", produces = MediaType.APPLICATION_JSON_VALUE)

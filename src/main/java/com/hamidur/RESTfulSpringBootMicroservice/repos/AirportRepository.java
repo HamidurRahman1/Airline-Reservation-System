@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AirportRepository extends CrudRepository<Airport, Integer>
 {
-    Airport findByAirportName(String airportName);
+    Airport findByAirportNameIgnoreCase(String airportName);
 }

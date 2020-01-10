@@ -1,13 +1,6 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,14 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "airplanes")
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
 public class Airplane implements Serializable
 {
     @Id
@@ -40,4 +29,51 @@ public class Airplane implements Serializable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "airline_id", name = "airline_id")
     private Airline airline;
+
+    public Integer getAirplaneId() {
+        return airplaneId;
+    }
+
+    public void setAirplaneId(Integer airplaneId) {
+        this.airplaneId = airplaneId;
+    }
+
+    public String getAirplaneName() {
+        return airplaneName;
+    }
+
+    public void setAirplaneName(String airplaneName) {
+        this.airplaneName = airplaneName;
+    }
+
+    public Airline getAirline() {
+        return airline;
+    }
+
+    public void setAirline(Airline airline) {
+        this.airline = airline;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Airplane)) return false;
+        Airplane airplane = (Airplane) o;
+        return Objects.equals(getAirplaneId(), airplane.getAirplaneId()) &&
+                Objects.equals(getAirplaneName(), airplane.getAirplaneName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAirplaneId(), getAirplaneName());
+    }
+
+    @Override
+    public String toString() {
+        return "Airplane{" +
+                "airplaneId=" + airplaneId +
+                ", airplaneName='" + airplaneName + '\'' +
+                ", airline=" + airline.getAirlineName() +
+                '}';
+    }
 }

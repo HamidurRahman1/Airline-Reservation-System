@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/public")
@@ -68,6 +69,19 @@ public class RESTController
     {
         Airline airline = airlineRepository.findByAirlineNameIgnoreCase(airlineName);
         return airline != null ? new ResponseEntity<>(airline, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/airline/{airlineName}/airplanes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Airplane>> getAirplanesByAirlineName(@PathVariable String airlineName)
+    {
+        Airline airline = airlineRepository.findByAirlineNameIgnoreCase(airlineName);
+        if(airline != null)
+        {
+            Set<Airplane> airplanes = airline.getAirplanes();
+            if(airplanes.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(airplanes, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/airplanes", produces = MediaType.APPLICATION_JSON_VALUE)

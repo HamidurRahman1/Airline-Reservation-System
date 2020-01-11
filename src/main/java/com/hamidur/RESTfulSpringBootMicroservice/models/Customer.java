@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -74,5 +75,32 @@ public class Customer
 
     public void setFlights(Set<Flight> flights) {
         this.flights = flights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(getCustomerId(), customer.getCustomerId()) &&
+                Objects.equals(getFirstName(), customer.getFirstName()) &&
+                Objects.equals(getLastName(), customer.getLastName()) &&
+                Objects.equals(getEmail(), customer.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCustomerId(), getFirstName(), getLastName(), getEmail());
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", flights=" + flights +
+                '}';
     }
 }

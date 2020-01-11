@@ -3,10 +3,12 @@ package com.hamidur.RESTfulSpringBootMicroservice.rest;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airline;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airplane;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airport;
+import com.hamidur.RESTfulSpringBootMicroservice.models.Customer;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirlineRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirplaneRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirportRepository;
 
+import com.hamidur.RESTfulSpringBootMicroservice.repos.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +33,8 @@ public class RESTController
     private AirlineRepository airlineRepository;
     @Autowired
     private AirplaneRepository airplaneRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @GetMapping(value = "/airports", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airport>> getAirports()
@@ -95,5 +100,25 @@ public class RESTController
             return new ResponseEntity<>(airplaneList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Customer>> getCustomers()
+    {
+        Set<Customer> customers = new LinkedHashSet<>();
+        Iterable<Customer> customerIterable = customerRepository.findAll();
+        if(customerIterable != null)
+        {
+            customerIterable.forEach(customer -> customers.add(customer));
+            return customers.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(customers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/customer/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Customer> getCustomerByEmail(@PathVariable String email)
+    {
+        Customer customer = customerRepository.findByEmailIgnoreCase(email);
+        return customer != null ? new ResponseEntity<>(customer, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

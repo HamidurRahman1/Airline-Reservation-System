@@ -11,3 +11,9 @@ create table airplanes
   airplane_name varchar (5) not null,
   airline_id int not null,
   foreign key (airline_id) references airlines (airline_id));
+
+create table sources
+  (source_id int not null auto_increment primary key,
+    date_time datetime not null,
+    airport_id int not null,
+    foreign key (airport_id) references airports(airport_id));

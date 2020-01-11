@@ -5,7 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "customers")
@@ -21,6 +25,14 @@ public class Customer
     private String lastName;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @ManyToMany
+    @JoinTable(
+            name = "customers_flights",
+            joinColumns = {@JoinColumn(name = "customer_id", referencedColumnName = "customer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "flight_id")}
+    )
+    private Set<Flight> flights;
 
     public Customer() {}
 
@@ -54,5 +66,13 @@ public class Customer
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Flight> getFlights() {
+        return flights;
+    }
+
+    public void setFlights(Set<Flight> flights) {
+        this.flights = flights;
     }
 }

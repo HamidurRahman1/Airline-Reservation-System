@@ -23,3 +23,27 @@ create table destinations
     date_time datetime not null,
     airport_id int not null,
     foreign key (airport_id) references airports(airport_id));
+
+create table customers
+  (customer_id int not null auto_increment primary key,
+    first_name varchar(15) not null,
+    last_name varchar (15) null,
+    email varchar (25) not null unique);
+
+create table flights
+  (flight_id int not null auto_increment primary key,
+    flight_code varchar (5) not null,
+    source_id int not null,
+    destination_id int not null,
+    airplane_id int not null,
+    fare decimal(5, 2) not null,
+    capacity int not null,
+    foreign key (source_id) references sources (source_id),
+    foreign key (destination_id) references destinations (destination_id),
+    foreign key (airplane_id) references airplanes (airplane_id));
+
+create table customers_flights
+  (customer_id int not null,
+    flight_id int not null,
+    foreign key (customer_id) references customers (customer_id),
+    foreign key (flight_id) references flights (flight_id));

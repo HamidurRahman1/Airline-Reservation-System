@@ -7,3 +7,9 @@ insert into airplanes (airplane_name, airline_id) values
 ('J130', 2), ('J238', 2), ('J395', 2), ('J725', 2),
 ('S133', 3), ('S236', 3), ('S390', 3), ('S720', 3);
 
+insert into customers (first_name, last_name, email) values
+('Hamidur', 'Rahman', 'random@email.com'),
+('user2', 'user2', 'user2@email.com'),
+('John', 'Doe', 'john@email.com'),
+('Jane', 'Doe', 'jane@email.com');
+

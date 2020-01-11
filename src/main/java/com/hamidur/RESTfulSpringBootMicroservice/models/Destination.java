@@ -21,7 +21,7 @@ public class Destination
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer destinationId;
     @Column(name = "date_time")
-    private LocalDateTime localDateTime;
+    private LocalDateTime arrivalDateTime;
     @OneToOne
     @JoinColumn(name = "airport_id", referencedColumnName = "airport_id")
     private Airport airport;
@@ -36,12 +36,12 @@ public class Destination
         this.destinationId = destinationId;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setArrivalDateTime(LocalDateTime arrivalDateTime) {
+        this.arrivalDateTime = arrivalDateTime;
     }
 
     public Airport getAirport() {
@@ -58,20 +58,20 @@ public class Destination
         if (!(o instanceof Destination)) return false;
         Destination that = (Destination) o;
         return Objects.equals(getDestinationId(), that.getDestinationId()) &&
-                Objects.equals(getLocalDateTime(), that.getLocalDateTime()) &&
+                Objects.equals(getArrivalDateTime(), that.getArrivalDateTime()) &&
                 Objects.equals(getAirport().getAirportId(), that.getAirport().getAirportId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDestinationId(), getLocalDateTime(), getAirport().getAirportId());
+        return Objects.hash(getDestinationId(), getArrivalDateTime(), getAirport().getAirportId());
     }
 
     @Override
     public String toString() {
         return "Destination{" +
                 "destinationId=" + destinationId +
-                ", localDateTime=" + localDateTime +
+                ", arrivalDateTime=" + arrivalDateTime +
                 ", airport=" + airport.getAirportId() +
                 '}';
     }

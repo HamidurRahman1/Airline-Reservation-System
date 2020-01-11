@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,8 +22,11 @@ public class Source
     @Column(name = "source_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer sourceId;
+
     @Column(name = "date_time")
-    private LocalDateTime localDateTime;
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    private LocalDateTime departureDateTime;
+
     @JoinColumn(name = "airport_id", referencedColumnName = "airport_id")
     @OneToOne
     private Airport airport;
@@ -36,12 +41,12 @@ public class Source
         this.sourceId = sourceId;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getDepartureDateTime() {
+        return departureDateTime;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setDepartureDateTime(LocalDateTime departureDateTime) {
+        this.departureDateTime = departureDateTime;
     }
 
     public Airport getAirport() {
@@ -58,20 +63,20 @@ public class Source
         if (!(o instanceof Source)) return false;
         Source source = (Source) o;
         return Objects.equals(getSourceId(), source.getSourceId()) &&
-                Objects.equals(getLocalDateTime(), source.getLocalDateTime()) &&
+                Objects.equals(getDepartureDateTime(), source.getDepartureDateTime()) &&
                 Objects.equals(getAirport().getAirportId(), source.getAirport().getAirportId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSourceId(), getLocalDateTime(), getAirport().getAirportId());
+        return Objects.hash(getSourceId(), getDepartureDateTime(), getAirport().getAirportId());
     }
 
     @Override
     public String toString() {
         return "Source{" +
                 "sourceId=" + sourceId +
-                ", localDateTime=" + localDateTime +
+                ", departureDateTime=" + departureDateTime +
                 ", airport=" + airport.getAirportId() +
                 '}';
     }

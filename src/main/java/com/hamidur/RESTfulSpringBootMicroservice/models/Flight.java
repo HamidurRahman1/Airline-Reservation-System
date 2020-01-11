@@ -1,9 +1,9 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,6 +41,9 @@ public class Flight
     private Float fare;
     @Column(name = "capacity", updatable = false, nullable = false)
     private Integer capacity;
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
     @ManyToMany(mappedBy = "flights")
     private Set<Customer> customers;
 
@@ -118,6 +121,14 @@ public class Flight
         this.customers = customers;
     }
 
+    public String getStatus() {
+        return status.toString();
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -144,6 +155,7 @@ public class Flight
                 ", availableSeat=" + availableSeat +
                 ", fare=" + fare +
                 ", capacity=" + capacity +
+                ", status=" + status +
                 '}';
     }
 }

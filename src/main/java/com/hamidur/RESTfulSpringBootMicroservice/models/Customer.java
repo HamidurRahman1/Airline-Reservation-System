@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Objects;
 import java.util.Set;
@@ -34,6 +35,9 @@ public class Customer
             inverseJoinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "flight_id")}
     )
     private Set<Flight> flights;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<Reservation> reservations;
 
     public Customer() {}
 

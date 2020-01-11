@@ -9,6 +9,7 @@ import com.hamidur.RESTfulSpringBootMicroservice.repos.AirplaneRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirportRepository;
 
 import com.hamidur.RESTfulSpringBootMicroservice.repos.CustomerRepository;
+import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +36,8 @@ public class RESTController
     private AirplaneRepository airplaneRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private FlightRepository flightRepository;
 
     @GetMapping(value = "/airports", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airport>> getAirports()

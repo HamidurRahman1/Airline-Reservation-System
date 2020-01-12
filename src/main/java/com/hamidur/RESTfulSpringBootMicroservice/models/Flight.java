@@ -151,7 +151,7 @@ public class Flight
         return "Flight{" +
                 "flightId=" + flightId +
                 ", flightCode='" + flightCode + '\'' +
-                ", airplane=" + airplane +
+//                ", airplane=" + airplane +
                 ", availableSeat=" + availableSeat +
                 ", fare=" + fare +
                 ", capacity=" + capacity +

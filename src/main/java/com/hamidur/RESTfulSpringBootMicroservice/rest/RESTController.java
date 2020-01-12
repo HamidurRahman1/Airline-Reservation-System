@@ -4,7 +4,6 @@ import com.hamidur.RESTfulSpringBootMicroservice.models.Airline;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airplane;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airport;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Customer;
-import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirlineRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirplaneRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.AirportRepository;
@@ -17,18 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 @RestController

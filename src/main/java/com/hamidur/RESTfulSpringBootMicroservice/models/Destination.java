@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ public class Destination
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer destinationId;
     @Column(name = "date_time")
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
     private LocalDateTime arrivalDateTime;
     @OneToOne
     @JoinColumn(name = "airport_id", referencedColumnName = "airport_id")

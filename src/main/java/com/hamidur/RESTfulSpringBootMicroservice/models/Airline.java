@@ -1,6 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "airlines")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Airline implements Serializable
 {
     @Id
@@ -24,8 +26,7 @@ public class Airline implements Serializable
     private Integer airlineId;
     @Column(name = "airline_name")
     private String airlineName;
-
-    @JsonIgnore
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "airline")
     private Set<Airplane> airplanes;
 

@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,6 +47,7 @@ public class Flight
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToMany(mappedBy = "flights")
+    @JsonIgnore
     private Set<Customer> customers;
 
     public Flight() {}
@@ -151,7 +154,7 @@ public class Flight
         return "Flight{" +
                 "flightId=" + flightId +
                 ", flightCode='" + flightCode + '\'' +
-//                ", airplane=" + airplane +
+                ", airplane=" + airplane +
                 ", availableSeat=" + availableSeat +
                 ", fare=" + fare +
                 ", capacity=" + capacity +

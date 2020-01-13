@@ -1,6 +1,6 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,8 +24,7 @@ public class Airplane implements Serializable
     private Integer airplaneId;
     @Column(name = "airplane_name")
     private String airplaneName;
-
-    @JsonIgnore
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "airline_id", name = "airline_id")
     private Airline airline;

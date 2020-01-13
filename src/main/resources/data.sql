@@ -13,3 +13,7 @@ insert into customers (first_name, last_name, email) values
 ('John', 'Doe', 'john@email.com'),
 ('Jane', 'Doe', 'jane@email.com');
 
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 1);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 2);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('1FF1', 1, 1, 5, 45.50, 10, 'ON_TIME');

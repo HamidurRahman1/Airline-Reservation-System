@@ -1,14 +1,18 @@
 package com.hamidur.RESTfulSpringBootMicroservice.rest;
 
+import com.hamidur.RESTfulSpringBootMicroservice.models.Destination;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
-
+import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.SourceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +30,19 @@ public class ProtectedRESTController
     private DestinationRepository destinationRepository;
 
     @PostMapping(value = "/insertFlight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> insertFlight(@RequestBody Flight flight)
+    public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
     {
-        System.out.println(flight);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Source source = sourceRepository.save(flight.getSource());
+        Destination destination = destinationRepository.save(flight.getDestination());
+        flight.setSource(source);
+        flight.setDestination(destination);
+        Flight f = flightRepository.save(flight);
+        return new ResponseEntity<>(f, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/f/{flightId}")
+    public ResponseEntity<Flight> get(@PathVariable Integer flightId)
+    {
+        return new ResponseEntity<>(flightRepository.findById(flightId).get(), HttpStatus.OK);
     }
 }

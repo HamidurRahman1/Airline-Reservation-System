@@ -86,4 +86,11 @@ public class ProtectedRESTController
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping(value = "/flightsByFare/{fare}")
+    public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
+    {
+        Set<Flight> flights = flightRepository.findByFare(fare);
+        return !flights.isEmpty() ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -70,7 +71,7 @@ public class ProtectedRESTController
     @GetMapping(value = "/flights/today", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByToday()
     {
-        Iterable<Flight> iterable = flightRepository.findByCurrentDateTime(Util.toViewDateTime(LocalDateTime.now()).toString());
+        Iterable<Flight> iterable = flightRepository.findByCurrentDateTime(Util.toDBDateTime(LocalDateTime.now()));
         if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else {
             Set<Flight> flights = new LinkedHashSet<>();
@@ -80,7 +81,7 @@ public class ProtectedRESTController
         }
     }
 
-    @GetMapping(value = "/flightsByFare/{fare}")
+    @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
     {
         Set<Flight> flights = flightRepository.findByFare(fare);

@@ -16,6 +16,12 @@ public class Util
         return LocalDateTime.parse(formatted, formatter);
     }
 
+    public static LocalDateTime toDBDateTime(LocalDateTime dateTime)
+    {
+        return LocalDateTime.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth(),
+                dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
+    }
+
     public static void main(String[] args) {
         System.out.println(toViewDateTime(LocalDateTime.now()));
     }

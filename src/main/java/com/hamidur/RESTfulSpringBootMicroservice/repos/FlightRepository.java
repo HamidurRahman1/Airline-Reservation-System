@@ -14,7 +14,7 @@ public interface FlightRepository extends CrudRepository<Flight, Integer>
 {
     @Query(value = "select * from flights f inner join sources s" +
                     " on s.source_id = f.source_id and s.date_time >= :date_time", nativeQuery = true)
-    Set<Flight> findByCurrentDateTime(@Param("date_time") String dateTime);
+    Set<Flight> findByCurrentDateTime(@Param("date_time") LocalDateTime dateTime);
 
     @Query(value = "select f from Flight f where f.fare <= :fare and f.fare >= 0")
     Set<Flight> findByFare(@Param("fare") Float fare);

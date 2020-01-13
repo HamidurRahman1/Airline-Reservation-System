@@ -18,9 +18,87 @@ insert into customers (first_name, last_name, email) values
 insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 1);
 insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 2);
 insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
-values ('1FF1', 1, 1, 5, 45.50, 10, 'ON_TIME');
+values ('1FF1', 1, 1, 1, 45.50, 10, 'ON_TIME');
 
 insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 2);
 insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 3);
 insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
-values ('2FF2', 2, 2, 10, 50.75, 5, 'ON_TIME');
+values ('2FF2', 2, 2, 5, 50.75, 5, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 3);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 4);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('3FF3', 3, 3, 9, 45.50, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 4);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 1);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('4FF4', 4, 4, 13, 50.75, 5, 'ON_TIME');
+
+--
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 2);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 4);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('5FF5', 5, 5, 2, 55.50, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 1);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 3);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('6FF6', 6, 6, 6, 57.75, 5, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 3);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 2);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('7FF7', 7, 7, 10, 58.50, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 4);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 1);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('8FF8', 8, 8, 14, 54.75, 5, 'ON_TIME');
+
+--
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 4);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 3);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('9FF9', 9, 9, 3, 68.50, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 3);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 1);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('10FF', 10, 10, 7, 69.75, 5, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 1);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 2);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('11FF', 11, 11, 11, 67.50, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 2);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 4);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('12FF', 12, 12, 15, 68.75, 5, 'ON_TIME');
+
+--
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 1);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 4);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('13FF', 13, 13, 4, 90.00, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 2);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 3);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('14FF', 14, 14, 8, 94.25, 5, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-14 11:30:34', 3);
+insert into destinations (date_time, airport_id) values ('2019-01-14 13:35:56', 1);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('15FF', 15, 15, 12, 93.99, 10, 'ON_TIME');
+
+insert into sources (date_time, airport_id) values ('2019-01-15 9:30:34', 4);
+insert into destinations (date_time, airport_id) values ('2019-01-15 13:35:56', 2);
+insert into flights (flight_code, source_id, destination_id, airplane_id, fare, capacity, status)
+values ('16FF', 16, 16, 16, 91.75, 5, 'ON_TIME');
+
+--

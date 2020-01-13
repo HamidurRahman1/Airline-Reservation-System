@@ -6,7 +6,6 @@ import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.SourceRepository;
-
 import com.hamidur.RESTfulSpringBootMicroservice.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,20 +70,14 @@ public class ProtectedRESTController
     @GetMapping(value = "/flights/today", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByToday()
     {
-        Iterable<Flight> iterable = flightRepository.findByCurrentDateTime();
-        if(iterable != null)
-        {
-            System.out.println("not null " + ((Set<Flight>) iterable).size());
+        Iterable<Flight> iterable = flightRepository.findByCurrentDateTime(Util.toViewDateTime(LocalDateTime.now()).toString());
+        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else {
             Set<Flight> flights = new LinkedHashSet<>();
             iterable.forEach(flight -> flights.add(flight));
             if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
-        else
-        {
-            System.out.println("null");
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/flightsByFare/{fare}")

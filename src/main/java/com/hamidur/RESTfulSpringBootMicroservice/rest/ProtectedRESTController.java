@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/p")
 public class ProtectedRESTController
@@ -40,9 +42,11 @@ public class ProtectedRESTController
         return new ResponseEntity<>(f, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/f/{flightId}")
+    @GetMapping(value = "/flight/{flightId}")
     public ResponseEntity<Flight> get(@PathVariable Integer flightId)
     {
-        return new ResponseEntity<>(flightRepository.findById(flightId).get(), HttpStatus.OK);
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+        return optionalFlight.isPresent() ? new ResponseEntity<>(optionalFlight.get(), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

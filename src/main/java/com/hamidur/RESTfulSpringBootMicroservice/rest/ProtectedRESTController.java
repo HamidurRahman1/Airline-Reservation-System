@@ -51,4 +51,18 @@ public class ProtectedRESTController
         return optionalFlight.isPresent() ? new ResponseEntity<>(optionalFlight.get(), HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping(value = "/flights", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Flight>> getFlights()
+    {
+        Iterable<Flight> iterable = flightRepository.findAll();
+        if(iterable != null)
+        {
+            Set<Flight> flights = new LinkedHashSet<>();
+            iterable.forEach(flight -> flights.add(flight));
+            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(flights, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

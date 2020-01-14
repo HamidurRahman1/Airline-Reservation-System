@@ -81,6 +81,24 @@ public class ProtectedRESTController
         }
     }
 
+    @GetMapping(value = "/flights/{date}")
+    public ResponseEntity<Set<Flight>> getFlightsByDate(@PathVariable String date)
+    {
+        String[] parts = date.split("-");
+        LocalDateTime requestedDate = LocalDateTime.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[0]),
+                Integer.parseInt(parts[1]), 0, 0, 1);
+
+        Iterable<Flight> iterable = flightRepository.findByDate(requestedDate);
+        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else {
+            Set<Flight> flights = new LinkedHashSet<>();
+            iterable.forEach(flight -> flights.add(flight));
+            System.out.println(flights.size());
+            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(flights, HttpStatus.OK);
+        }
+    }
+
     @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
     {

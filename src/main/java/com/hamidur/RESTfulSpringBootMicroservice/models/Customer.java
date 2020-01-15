@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,7 @@ public class Customer
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(
             name = "customers_flights",
@@ -36,6 +39,7 @@ public class Customer
     )
     private Set<Flight> flights;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "customer")
     private Set<Reservation> reservations;
 

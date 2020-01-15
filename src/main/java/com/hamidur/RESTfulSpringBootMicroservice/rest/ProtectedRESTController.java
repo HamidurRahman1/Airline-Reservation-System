@@ -96,6 +96,19 @@ public class ProtectedRESTController
         return iterableToSet(flightRepository.findFlightsByStatus(status));
     }
 
+    @GetMapping(value = "/rsvps/customer/{customerId}")
+    public ResponseEntity<Set<Reservation>> getAllRSVPsByCustomerId(@PathVariable Integer customerId)
+    {
+        Iterable<Reservation> iterable = reservationRepository.findAllRSVPByCustomerId(customerId);
+        if(iterable != null)
+        {
+            Set<Reservation> reservations = new LinkedHashSet<>();
+            iterable.forEach(reservation -> reservations.add(reservation));
+            return new ResponseEntity<>(reservations, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
     {
         if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);

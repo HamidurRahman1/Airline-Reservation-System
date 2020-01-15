@@ -1,9 +1,11 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,8 +26,9 @@ public class Reservation
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rsvpId;
     @Column(name = "date_time")
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
     private LocalDateTime rsvpDate;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
     @JsonManagedReference

@@ -52,7 +52,7 @@ create table customers_flights
 create table reservations
   (reservation_id int not null auto_increment primary key,
     date_time datetime not null,
-    status varchar (8) not null,
+    status varchar (9) not null,
     customer_id int not null,
     flight_id int not null,
     foreign key (customer_id) references customers (customer_id),

@@ -3,6 +3,7 @@ package com.hamidur.RESTfulSpringBootMicroservice.rest;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Destination;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
+import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.SourceRepository;
@@ -81,6 +82,7 @@ public class ProtectedRESTController
         }
     }
 
+    // date format: mm-dd-yyyy
     @GetMapping(value = "/flights/{date}")
     public ResponseEntity<Set<Flight>> getFlightsByDate(@PathVariable String date)
     {
@@ -93,7 +95,6 @@ public class ProtectedRESTController
         else {
             Set<Flight> flights = new LinkedHashSet<>();
             iterable.forEach(flight -> flights.add(flight));
-            System.out.println(flights.size());
             if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
@@ -104,5 +105,19 @@ public class ProtectedRESTController
     {
         Set<Flight> flights = flightRepository.findByFare(fare);
         return !flights.isEmpty() ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // See Status class for supported value
+    @GetMapping(value = "/flightsByStatus/{status}")
+    public ResponseEntity<Set<Flight>> getFlightsByStatus(@PathVariable Status status)
+    {
+        Iterable<Flight> iterable = flightRepository.findFlightsByStatus(status);
+        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else {
+            Set<Flight> flights = new LinkedHashSet<>();
+            iterable.forEach(flight -> flights.add(flight));
+            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(flights, HttpStatus.OK);
+        }
     }
 }

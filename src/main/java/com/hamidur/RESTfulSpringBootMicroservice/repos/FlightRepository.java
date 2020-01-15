@@ -1,6 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.repos;
 
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
+import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,6 @@ public interface FlightRepository extends CrudRepository<Flight, Integer>
 
     @Query(value = "select f from Flight f where f.fare <= :fare and f.fare >= 0")
     Set<Flight> findByFare(@Param("fare") Float fare);
+
+    Set<Flight> findFlightsByStatus(Status status);
 }

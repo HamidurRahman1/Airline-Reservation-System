@@ -102,3 +102,8 @@ insert into flights (flight_code, source_id, destination_id, airplane_id, fare, 
 values ('16FF', 16, 16, 16, 91.75, 5, 'ON_TIME');
 
 --
+
+insert into reservations (date_time, status, customer_id, flight_id) values
+('2020-01-14 15:20:23', 'ACTIVE', 1, 2),
+('2020-01-14 15:26:35', 'CANCELLED', 1, 4),
+('2020-01-14 15:20:40', 'ACTIVE', 2, 6);

@@ -2,10 +2,12 @@ package com.hamidur.RESTfulSpringBootMicroservice.rest;
 
 import com.hamidur.RESTfulSpringBootMicroservice.models.Destination;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
+import com.hamidur.RESTfulSpringBootMicroservice.models.Reservation;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
+import com.hamidur.RESTfulSpringBootMicroservice.repos.ReservationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.SourceRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.utils.Util;
 
@@ -35,6 +37,8 @@ public class ProtectedRESTController
     private SourceRepository sourceRepository;
     @Autowired
     private DestinationRepository destinationRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @PostMapping(value = "/insertFlight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)

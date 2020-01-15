@@ -58,28 +58,13 @@ public class ProtectedRESTController
     @GetMapping(value = "/flights", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlights()
     {
-        Iterable<Flight> iterable = flightRepository.findAll();
-        if(iterable != null)
-        {
-            Set<Flight> flights = new LinkedHashSet<>();
-            iterable.forEach(flight -> flights.add(flight));
-            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(flights, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return iterableToSet(flightRepository.findAll());
     }
 
     @GetMapping(value = "/flights/today", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByToday()
     {
-        Iterable<Flight> iterable = flightRepository.findByCurrentDateTime(Util.toDBDateTime(LocalDateTime.now()));
-        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else {
-            Set<Flight> flights = new LinkedHashSet<>();
-            iterable.forEach(flight -> flights.add(flight));
-            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(flights, HttpStatus.OK);
-        }
+        return iterableToSet(flightRepository.findByCurrentDateTime(Util.toDBDateTime(LocalDateTime.now())));
     }
 
     // date format: mm-dd-yyyy
@@ -90,14 +75,7 @@ public class ProtectedRESTController
         LocalDateTime requestedDate = LocalDateTime.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[0]),
                 Integer.parseInt(parts[1]), 0, 0, 1);
 
-        Iterable<Flight> iterable = flightRepository.findByDate(requestedDate);
-        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else {
-            Set<Flight> flights = new LinkedHashSet<>();
-            iterable.forEach(flight -> flights.add(flight));
-            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(flights, HttpStatus.OK);
-        }
+        return iterableToSet(flightRepository.findByDate(requestedDate));
     }
 
     @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,7 +89,11 @@ public class ProtectedRESTController
     @GetMapping(value = "/flightsByStatus/{status}")
     public ResponseEntity<Set<Flight>> getFlightsByStatus(@PathVariable Status status)
     {
-        Iterable<Flight> iterable = flightRepository.findFlightsByStatus(status);
+        return iterableToSet(flightRepository.findFlightsByStatus(status));
+    }
+
+    private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
+    {
         if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else {
             Set<Flight> flights = new LinkedHashSet<>();

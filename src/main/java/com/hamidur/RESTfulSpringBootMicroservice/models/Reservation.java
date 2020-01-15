@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -26,9 +28,11 @@ public class Reservation
     @Enumerated
     @Column(name = "status")
     private Status status;
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "flight_id", referencedColumnName = "flight_id")
     private Flight flight;
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;

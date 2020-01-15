@@ -122,6 +122,19 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/rsvps/{airline}/active")
+    public ResponseEntity<Set<Reservation>> getAllActiveRSVPsByAirline(@PathVariable String airline)
+    {
+        Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.ACTIVE);
+        if(iterable != null)
+        {
+            Set<Reservation> reservations = new LinkedHashSet<>();
+            iterable.forEach(reservation -> reservations.add(reservation));
+            return new ResponseEntity<>(reservations, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
     {
         if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);

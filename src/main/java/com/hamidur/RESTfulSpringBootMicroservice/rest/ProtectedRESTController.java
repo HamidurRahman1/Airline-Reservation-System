@@ -109,6 +109,19 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/rsvps/cancelled")
+    public ResponseEntity<Set<Reservation>> getAllCancelledRSVPs()
+    {
+        Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.CANCELLED);
+        if(iterable != null)
+        {
+            Set<Reservation> reservations = new LinkedHashSet<>();
+            iterable.forEach(reservation -> reservations.add(reservation));
+            return new ResponseEntity<>(reservations, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
     {
         if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);

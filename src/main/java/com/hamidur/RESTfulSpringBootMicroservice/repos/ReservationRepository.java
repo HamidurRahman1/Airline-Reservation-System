@@ -18,10 +18,10 @@ public interface ReservationRepository extends CrudRepository<Reservation, Integ
     Set<Reservation> findReservationsByStatus(Status status);
 
     // native query - MySQL - inner join
-    @Query(value = "select r.reservation_id from reservations r inner join flights f on f.flight_id in " +
-            "(SELECT flight_id FROm  FLIGHTS where airplane_id in " +
-            "( select ap.airplane_id from airplanes ap inner join airlines al " +
-            "on al.airline_id = (select airline_id  from airlines where airline_name = :airline) " +
-            "and al.airline_id = ap.airline_id )) and r.flight_id = f.flight_id", nativeQuery = true)
-    Set<Reservation> findActiveReservationsByAirline(@Param("airline")String airline);
+    @Query(value = "select * from reservations r inner join flights f on f.flight_id in " +
+            "(select flight_id from flights where airplane_id in " +
+            "(select ap.airplane_id from airplanes ap inner join airlines al " +
+            "on al.airline_id = (select airline_id  from airlines where lower(airline_name) = lower(:airline)) " +
+            "and al.airline_id = ap.airline_id )) and r.flight_id = f.flight_id and lower(r.status) = lower(:status)", nativeQuery = true)
+    Set<Reservation> findActiveReservationsByAirline(@Param("airline")String airline, @Param("status") String status);
 }

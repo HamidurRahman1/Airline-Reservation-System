@@ -109,7 +109,7 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/rsvps/cancelled")
+    @GetMapping(value = "/rsvps/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPs()
     {
         Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.CANCELLED);
@@ -122,10 +122,11 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/rsvps/{airline}/active")
+    @GetMapping(value = "/rsvps/{airline}/active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllActiveRSVPsByAirline(@PathVariable String airline)
     {
-        Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.ACTIVE);
+        Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.ACTIVE.toString());
+        System.out.println(((Set<Reservation>) iterable).size());
         if(iterable != null)
         {
             Set<Reservation> reservations = new LinkedHashSet<>();

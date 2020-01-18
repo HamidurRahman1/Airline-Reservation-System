@@ -1,5 +1,7 @@
 package com.hamidur.RESTfulSpringBootMicroservice.rest;
 
+import com.hamidur.RESTfulSpringBootMicroservice.errors.InvalidRequestException;
+import com.hamidur.RESTfulSpringBootMicroservice.errors.InvalidRequestExceptionResponse;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Customer;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Destination;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
@@ -153,29 +155,37 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/rsvps/rsvp/customer", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rsvps/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addRSVPForCustomerById(@RequestBody Map<String, Object> json)
     {
+        int customerId = -1;
+        int flightId = -1;
         try
         {
+            if(Util.verifyRSVPByCustomerId(json))
+            {
+                customerId = (Integer) json.get(Util.CUSTOMER_ID_JKEY);
+                Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+                if(!optionalCustomer.isPresent()) return new ResponseEntity<>("Customer does not exists with id="+customerId, HttpStatus.NOT_FOUND);
+                Customer customer = optionalCustomer.get();
 
-            Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-            if(!optionalCustomer.isPresent()) return new ResponseEntity<>("Customer does not exists with id="+customerId, HttpStatus.NOT_FOUND);
-            Customer customer = optionalCustomer.get();
+                flightId = (Integer)json.get(Util.FLIGHT_ID_JKEY);
+                Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+                if(!optionalFlight.isPresent()) return new ResponseEntity<>("Flight does not exists with id="+flightId, HttpStatus.NOT_FOUND);
+                Flight flight = optionalFlight.get();
 
-            Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-            if(!optionalFlight.isPresent()) return new ResponseEntity<>("Flight does not exists with id="+flightId, HttpStatus.NOT_FOUND);
-            Flight flight = optionalFlight.get();
+                reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
 
-            reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
+                flight.getCustomers().add(customer);
 
-            flight.getCustomers().add(customer);
-
-            flightRepository.save(flight);
-
+                flightRepository.save(flight);
+            }
         }
-        catch ()
-
+        catch (InvalidRequestException ex)
+        {
+            InvalidRequestExceptionResponse response = new InvalidRequestExceptionResponse(ex);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("Successfully reserved a seat for customer_id="+customerId+" in flight_id="+flightId, HttpStatus.OK);
     }
 

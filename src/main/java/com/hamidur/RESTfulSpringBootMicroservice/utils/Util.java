@@ -21,13 +21,13 @@ public class Util
 
     public static boolean verifyRSVPByCustomerId(final Map<String, Object> json) throws InvalidRequestException
     {
-        if(json.size() != 3) throw new InvalidRequestException(HttpStatus.BAD_REQUEST.value(), "request must have 3 values, found="+json.size());
+        if(json.size() != 2) throw new InvalidRequestException(HttpStatus.BAD_REQUEST.value(), "request must have 2 values, found="+json.size());
 
         if(json.getOrDefault(CUSTOMER_ID_JKEY, -1).equals(-1))
         {
             throw new InvalidRequestException(HttpStatus.BAD_REQUEST.value(), "request body missing key="+CUSTOMER_ID_JKEY);
         }
-        if(json.getOrDefault("flight_id", -1).equals(-1))
+        if(json.getOrDefault(FLIGHT_ID_JKEY, -1).equals(-1))
         {
             throw new InvalidRequestException(HttpStatus.BAD_REQUEST.value(), "request body missing key="+FLIGHT_ID_JKEY);
         }

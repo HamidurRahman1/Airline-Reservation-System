@@ -32,6 +32,6 @@ public interface ReservationRepository extends CrudRepository<Reservation, Integ
     @Transactional
     @Query(value = "insert into reservations (date_time, status, customer_id, flight_id) " +
                     "values (:date_time, :status, :customer_id, :flight_id)", nativeQuery = true)
-    void insertRSVPByCustomer(@Param("date_time")LocalDateTime dateTime, @Param("status")String status,
-                             @Param("customer_id")int customerId, @Param("flight_id")int flightId);
+    void insertRSVPByCustomerId(@Param("date_time")LocalDateTime dateTime, @Param("status")String status,
+                                @Param("customer_id")int customerId, @Param("flight_id")int flightId);
 }

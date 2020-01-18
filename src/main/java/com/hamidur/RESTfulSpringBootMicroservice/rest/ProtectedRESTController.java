@@ -5,6 +5,7 @@ import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Reservation;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
+import com.hamidur.RESTfulSpringBootMicroservice.repos.CustomerRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
 import com.hamidur.RESTfulSpringBootMicroservice.repos.ReservationRepository;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +40,8 @@ public class ProtectedRESTController
     private DestinationRepository destinationRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
@@ -149,19 +151,17 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/rsvps/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addRSVPForCustomer(@RequestBody Map<String, Object> json)
+    @PostMapping(value = "/rsvps/rsvp/customer/{customerId}/flight/{flightId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addRSVPForCustomerById(@PathVariable Integer customerId, @PathVariable Integer flightId)
     {
-        if(json.size() != 3) return new ResponseEntity<>("request must have 3 values, found="+json.size(), HttpStatus.BAD_REQUEST);
+        boolean existsCustomer = customerRepository.existsById(customerId);
+        if(!existsCustomer) return new ResponseEntity<>("Customer does not exists with id="+customerId, HttpStatus.NOT_FOUND);
+        boolean existsFlight = flightRepository.existsById(flightId);
+        if(!existsFlight) return new ResponseEntity<>("Flight does not exists with id="+flightId, HttpStatus.NOT_FOUND);
 
-        boolean isValid = Util.verifyRSVPByCustomerId(json);
+        reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
 
-        reservationRepository.insertRSVPByCustomer(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), 1, 1);
-        for(String k : json.keySet())
-        {
-            System.out.println(k + " -> " + json.get(k));
-        }
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity<>("Successfully reserved a seat for customer_id="+customerId+" in flight_id="+flightId, HttpStatus.OK);
     }
 
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)

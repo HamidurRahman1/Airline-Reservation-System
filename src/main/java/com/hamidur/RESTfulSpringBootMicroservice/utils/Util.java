@@ -3,7 +3,6 @@ package com.hamidur.RESTfulSpringBootMicroservice.utils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Map;
 
 public class Util
 {
@@ -15,11 +14,6 @@ public class Util
     public static final String FLIGHT_ID_JKEY = "flight_id";
     public static final String CUSTOMER_ID_JKEY = "customer_id";
     public static final String DATE_TIME_JKEY = "date_time";
-
-    public static boolean verifyRSVPByCustomerId(final Map<String, Object> json)
-    {
-        return false;
-    }
 
     public static LocalDateTime toViewDateTime(LocalDateTime dbDateTime)
     {

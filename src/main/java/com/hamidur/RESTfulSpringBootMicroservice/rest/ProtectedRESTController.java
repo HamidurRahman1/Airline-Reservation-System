@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -155,8 +156,8 @@ public class ProtectedRESTController
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/rsvps/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> addRSVPForCustomerById(@RequestBody Map<String, Object> json)
+    @PostMapping(value = "/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> addRSVPByCustomerId(@RequestBody Map<String, Object> json)
     {
         int customerId = -1;
         int flightId = -1;
@@ -187,6 +188,32 @@ public class ProtectedRESTController
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Successfully reserved a seat for customer_id="+customerId+" in flight_id="+flightId, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/cancel/rsvp/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
+    {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(rsvpId);
+        if(!optionalReservation.isPresent())
+            return new ResponseEntity<>("No reservation exists with id="+rsvpId, HttpStatus.NOT_FOUND);
+
+        Reservation reservation = optionalReservation.get();
+        System.out.println("1 -> " +reservation.getCustomer().getReservations().size());
+        System.out.println("2 -> " +reservation.getFlight().getCustomers().size());
+
+        reservation.setStatus(Status.CANCELLED);
+        reservation.getFlight().getCustomers().remove(reservation.getCustomer());
+
+        System.out.println("3 -> " +reservation.getStatus().toString());
+        System.out.println("4 -> " +reservation.getCustomer().getReservations().size());
+        System.out.println("5 -> " +reservation.getFlight().getCustomers().size());
+
+        Reservation reservation1 = reservationRepository.save(reservation);
+        System.out.println("6 -> " +reservation1.getStatus().toString());
+        System.out.println("7 -> " +reservation1.getCustomer().getReservations().size());
+        System.out.println("8 -> " +reservation1.getFlight().getCustomers().size());
+
+        return new ResponseEntity<>("cancelled rsvp id="+rsvpId, HttpStatus.OK);
     }
 
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)

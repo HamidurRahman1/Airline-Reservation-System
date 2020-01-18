@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class ProtectedRESTController
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @PostMapping(value = "/insertFlight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
     {
         Source source = sourceRepository.save(flight.getSource());
@@ -139,7 +140,6 @@ public class ProtectedRESTController
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPsByAirline(@PathVariable String airline)
     {
         Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.CANCELLED.toString());
-        System.out.println(((Set<Reservation>) iterable).size());
         if(iterable != null)
         {
             Set<Reservation> reservations = new LinkedHashSet<>();
@@ -147,6 +147,21 @@ public class ProtectedRESTController
             return new ResponseEntity<>(reservations, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value = "/rsvps/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addRSVPForCustomer(@RequestBody Map<String, Object> json)
+    {
+        if(json.size() != 3) return new ResponseEntity<>("request must have 3 values, found="+json.size(), HttpStatus.BAD_REQUEST);
+
+        boolean isValid = Util.verifyRSVPByCustomerId(json);
+
+        reservationRepository.insertRSVPByCustomer(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), 1, 1);
+        for(String k : json.keySet())
+        {
+            System.out.println(k + " -> " + json.get(k));
+        }
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)

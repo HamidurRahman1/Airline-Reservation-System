@@ -3,11 +3,23 @@ package com.hamidur.RESTfulSpringBootMicroservice.utils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Map;
 
 public class Util
 {
     private static final String JSON_PATTERN = "MM-dd-yyyy HH:mm:ss";
     private static final String DB_TO_VIEW = "MM-dd-yyyy HH:mm:ss";
+
+    //custom keys for json
+    public static final String RSVP_ID_JKEY = "reservation_id";
+    public static final String FLIGHT_ID_JKEY = "flight_id";
+    public static final String CUSTOMER_ID_JKEY = "customer_id";
+    public static final String DATE_TIME_JKEY = "date_time";
+
+    public static boolean verifyRSVPByCustomerId(final Map<String, Object> json)
+    {
+        return false;
+    }
 
     public static LocalDateTime toViewDateTime(LocalDateTime dbDateTime)
     {

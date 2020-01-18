@@ -2,10 +2,13 @@ package com.hamidur.RESTfulSpringBootMicroservice.repos;
 
 import com.hamidur.RESTfulSpringBootMicroservice.models.Reservation;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface ReservationRepository extends CrudRepository<Reservation, Integer> {
@@ -24,4 +27,11 @@ public interface ReservationRepository extends CrudRepository<Reservation, Integ
             "on al.airline_id = (select airline_id  from airlines where lower(airline_name) = lower(:airline)) " +
             "and al.airline_id = ap.airline_id )) and r.flight_id = f.flight_id and lower(r.status) = lower(:status)", nativeQuery = true)
     Set<Reservation> findActiveReservationsByAirline(@Param("airline")String airline, @Param("status") String status);
+
+    @Modifying
+    @Transactional
+    @Query(value = "insert into reservations (date_time, status, customer_id, flight_id) " +
+                    "values (:date_time, :status, :customer_id, :flight_id)", nativeQuery = true)
+    void insertRSVPByCustomer(@Param("date_time")LocalDateTime dateTime, @Param("status")String status,
+                             @Param("customer_id")int customerId, @Param("flight_id")int flightId);
 }

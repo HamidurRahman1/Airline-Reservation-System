@@ -31,12 +31,7 @@ public class Customer
     private String email;
 
     @JsonBackReference
-    @ManyToMany
-    @JoinTable(
-            name = "customers_flights",
-            joinColumns = {@JoinColumn(name = "customer_id", referencedColumnName = "customer_id")},
-            inverseJoinColumns = {@JoinColumn(name = "flight_id", referencedColumnName = "flight_id")}
-    )
+    @ManyToMany(mappedBy = "customers")
     private Set<Flight> flights;
 
     @JsonBackReference

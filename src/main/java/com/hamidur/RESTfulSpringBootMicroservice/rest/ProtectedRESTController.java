@@ -108,52 +108,28 @@ public class ProtectedRESTController
     public ResponseEntity<Set<Reservation>> getAllRSVPsByCustomerId(@PathVariable Integer customerId)
     {
         Iterable<Reservation> iterable = reservationRepository.findAllRSVPByCustomerId(customerId);
-        if(iterable != null)
-        {
-            Set<Reservation> reservations = new LinkedHashSet<>();
-            iterable.forEach(reservation -> reservations.add(reservation));
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return iterableToReservationSet(iterable);
     }
 
     @GetMapping(value = "/rsvps/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPs()
     {
         Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.CANCELLED);
-        if(iterable != null)
-        {
-            Set<Reservation> reservations = new LinkedHashSet<>();
-            iterable.forEach(reservation -> reservations.add(reservation));
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return iterableToReservationSet(iterable);
     }
 
     @GetMapping(value = "/rsvps/{airline}/active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllActiveRSVPsByAirline(@PathVariable String airline)
     {
         Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.ACTIVE.toString());
-        if(iterable != null)
-        {
-            Set<Reservation> reservations = new LinkedHashSet<>();
-            iterable.forEach(reservation -> reservations.add(reservation));
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return iterableToReservationSet(iterable);
     }
 
     @GetMapping(value = "/rsvps/{airline}/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPsByAirline(@PathVariable String airline)
     {
         Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.CANCELLED.toString());
-        if(iterable != null)
-        {
-            Set<Reservation> reservations = new LinkedHashSet<>();
-            iterable.forEach(reservation -> reservations.add(reservation));
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return iterableToReservationSet(iterable);
     }
 
     @PostMapping(value = "/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -191,29 +167,19 @@ public class ProtectedRESTController
     }
 
     @PutMapping(value = "/cancel/rsvp/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
+    public ResponseEntity<String> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
     {
         Optional<Reservation> optionalReservation = reservationRepository.findById(rsvpId);
         if(!optionalReservation.isPresent())
             return new ResponseEntity<>("No reservation exists with id="+rsvpId, HttpStatus.NOT_FOUND);
 
         Reservation reservation = optionalReservation.get();
-        System.out.println("1 -> " +reservation.getCustomer().getReservations().size());
-        System.out.println("2 -> " +reservation.getFlight().getCustomers().size());
 
         reservation.setStatus(Status.CANCELLED);
         reservation.getFlight().getCustomers().remove(reservation.getCustomer());
 
-        System.out.println("3 -> " +reservation.getStatus().toString());
-        System.out.println("4 -> " +reservation.getCustomer().getReservations().size());
-        System.out.println("5 -> " +reservation.getFlight().getCustomers().size());
-
-        Reservation reservation1 = reservationRepository.save(reservation);
-        System.out.println("6 -> " +reservation1.getStatus().toString());
-        System.out.println("7 -> " +reservation1.getCustomer().getReservations().size());
-        System.out.println("8 -> " +reservation1.getFlight().getCustomers().size());
-
-        return new ResponseEntity<>("cancelled rsvp id="+rsvpId, HttpStatus.OK);
+        reservationRepository.save(reservation);
+        return new ResponseEntity<>("cancelled reservation id="+rsvpId, HttpStatus.OK);
     }
 
     private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
@@ -225,5 +191,17 @@ public class ProtectedRESTController
             if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new ResponseEntity<>(flights, HttpStatus.OK);
         }
+    }
+
+    private ResponseEntity<Set<Reservation>> iterableToReservationSet(Iterable<Reservation> iterable)
+    {
+        if(iterable != null)
+        {
+            Set<Reservation> reservations = new LinkedHashSet<>();
+            iterable.forEach(reservation -> reservations.add(reservation));
+            if(reservations.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(reservations, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

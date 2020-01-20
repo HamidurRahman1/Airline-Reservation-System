@@ -1,8 +1,10 @@
 package com.hamidur.RESTfulSpringBootMicroservice.utils;
 
 import com.hamidur.RESTfulSpringBootMicroservice.errors.InvalidRequestException;
+import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -47,7 +49,53 @@ public class Util
                 dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
     }
 
-    public static void main(String[] args) {
-        System.out.println(toViewDateTime(LocalDateTime.now()));
+    public static boolean validateAirlineName(String airlineName)
+    {
+        if(airlineName == null || airlineName.trim().toLowerCase().isEmpty())
+            throw new IllegalArgumentException("Invalid input for airline name.");
+        return true;
+    }
+
+    public static boolean validateAirportName(String airportName)
+    {
+        if(airportName == null || airportName.trim().toLowerCase().isEmpty())
+            throw new IllegalArgumentException("Invalid input for airport name.");
+        return true;
+    }
+
+    public static boolean validateEmail(String airportName)
+    {
+        if(airportName == null || airportName.trim().toLowerCase().isEmpty())
+            throw new IllegalArgumentException("Invalid input for email.");
+        return true;
+    }
+
+    public static boolean validateNumber(Integer number)
+    {
+        if(number >= 0) return true;
+        else throw new IllegalArgumentException("Invalid number provided.");
+    }
+
+    public static LocalDateTime stringDateToDateTime(String date)
+    {
+        try
+        {
+            String[] parts = date.split("-");
+            return LocalDateTime.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[0]),
+                    Integer.parseInt(parts[1]), 0, 0, 1);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    public static Status validateFlightStatus(String status)
+    {
+        if(status.trim().equalsIgnoreCase(Status.ON_TIME.toString()))
+            return Status.ON_TIME;
+        else if(status.trim().equalsIgnoreCase(Status.CANCELLED.toString()))
+            return Status.CANCELLED;
+        else throw new IllegalArgumentException("Invalid status provided. status=ON_TIME or CANCELLED");
     }
 }

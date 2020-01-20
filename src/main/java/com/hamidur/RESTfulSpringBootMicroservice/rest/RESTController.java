@@ -6,19 +6,16 @@ import com.hamidur.RESTfulSpringBootMicroservice.models.Airline;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airplane;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Airport;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Customer;
-import com.hamidur.RESTfulSpringBootMicroservice.models.Destination;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Flight;
 import com.hamidur.RESTfulSpringBootMicroservice.models.Reservation;
-import com.hamidur.RESTfulSpringBootMicroservice.models.Source;
-import com.hamidur.RESTfulSpringBootMicroservice.models.Status;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.AirlineRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.AirplaneRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.AirportRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.CustomerRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.DestinationRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.FlightRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.ReservationRepository;
-import com.hamidur.RESTfulSpringBootMicroservice.repos.SourceRepository;
+import com.hamidur.RESTfulSpringBootMicroservice.services.AirlineService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.AirplaneService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.AirportService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.CustomerService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.DestinationService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.FlightService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.ReservationService;
+import com.hamidur.RESTfulSpringBootMicroservice.services.SourceService;
 import com.hamidur.RESTfulSpringBootMicroservice.utils.Util;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,276 +29,285 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/api/public")
 public class RESTController
 {
+    private final AirportService airportService;
+    private final AirlineService airlineService;
+    private final AirplaneService airplaneService;
+    private final CustomerService customerService;
+    private final DestinationService destinationService;
+    private final FlightService flightService;
+    private final ReservationService reservationService;
+    private final SourceService sourceService;
+
     @Autowired
-    private AirportRepository airportRepository;
-    @Autowired
-    private AirlineRepository airlineRepository;
-    @Autowired
-    private AirplaneRepository airplaneRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private DestinationRepository destinationRepository;
-    @Autowired
-    private FlightRepository flightRepository;
-    @Autowired
-    private ReservationRepository reservationRepository;
-    @Autowired
-    private SourceRepository sourceRepository;
+    public RESTController(final AirportService airportService, final AirlineService airlineService,
+                          final AirplaneService airplaneService, final CustomerService customerService,
+                          final DestinationService destinationService, final FlightService flightService,
+                          final ReservationService reservationService, final SourceService sourceService)
+    {
+        this.airportService = airportService;
+        this.airlineService = airlineService;
+        this.airplaneService = airplaneService;
+        this.customerService = customerService;
+        this.destinationService = destinationService;
+        this.flightService = flightService;
+        this.reservationService = reservationService;
+        this.sourceService = sourceService;
+    }
 
     @GetMapping(value = "/airports", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airport>> getAirports()
     {
-        Iterable<Airport> airports = airportRepository.findAll();
-        if(airports != null)
-        {
-            List<Airport> airportList = new LinkedList<>();
-            airports.forEach(airport -> airportList.add(airport));
-            return new ResponseEntity<>(airportList, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<Airport> airports = airportService.getAirports();
+        return airports != null ? new ResponseEntity<>(airports, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/airport/{airportName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Airport> getAirportByName(@PathVariable String airportName)
     {
-        Airport airport = airportRepository.findByAirportNameIgnoreCase(airportName);
-        return airport != null ? new ResponseEntity<>(airport, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try
+        {
+            Airport airport = null;
+            if(Util.validateAirportName(airportName))
+            {
+                airport = airportService.getAirportByName(airportName);
+            }
+            return airport != null ? new ResponseEntity<>(airport, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @GetMapping(value = "/airlines", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airline>> getAirlines()
     {
-        Iterable<Airline> airlines = airlineRepository.findAll();
-        if(airlines != null)
-        {
-            List<Airline> airlineList = new LinkedList<>();
-            airlines.forEach(airline -> airlineList.add(airline));
-            return new ResponseEntity<>(airlineList, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<Airline> airlines = airlineService.getAirlines();
+        return airlines != null ? new ResponseEntity<>(airlines, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/airline/{airlineName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Airline> getAirlineByName(@PathVariable String airlineName)
     {
-        Airline airline = airlineRepository.findByAirlineNameIgnoreCase(airlineName);
-        return airline != null ? new ResponseEntity<>(airline, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try
+        {
+            Airline airline = null;
+            if(Util.validateAirlineName(airlineName))
+            {
+                airline = airlineService.getAirlineByName(airlineName);
+            }
+            return airline != null ? new ResponseEntity<>(airline, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @GetMapping(value = "/airline/{airlineName}/airplanes", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Airplane>> getAirplanesByAirlineName(@PathVariable String airlineName)
     {
-        Airline airline = airlineRepository.findByAirlineNameIgnoreCase(airlineName);
-        if(airline != null)
+        try
         {
-            Set<Airplane> airplanes = airline.getAirplanes();
-            if(airplanes.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(airplanes, HttpStatus.OK);
+            Set<Airplane> airplanes = null;
+            if(Util.validateAirlineName(airlineName)) airplanes = airlineService.getAirplanesByAirlineName(airlineName);
+            return airplanes != null ? new ResponseEntity<>(airplanes, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @GetMapping(value = "/airplanes", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Airplane>> getAirplanes()
     {
-        Iterable<Airplane> airplanes = airplaneRepository.findAll();
-        if(airplanes != null)
-        {
-            List<Airplane> airplaneList = new LinkedList<>();
-            airplanes.forEach(airplane -> airplaneList.add(airplane));
-            return new ResponseEntity<>(airplaneList, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<Airplane> airplanes = airplaneService.getAirplanes();
+        return airplanes != null ? new ResponseEntity<>(airplanes, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Customer>> getCustomers()
     {
-        Set<Customer> customers = new LinkedHashSet<>();
-        Iterable<Customer> customerIterable = customerRepository.findAll();
-        if(customerIterable != null)
-        {
-            customerIterable.forEach(customer -> customers.add(customer));
-            return customers.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(customers, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Set<Customer> customers = customerService.getCustomers();
+        return customers != null ? new ResponseEntity<>(customers, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/customer/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Customer> getCustomerByEmail(@PathVariable String email)
     {
-        Customer customer = customerRepository.findByEmailIgnoreCase(email);
+        Customer customer = customerService.getCustomerByEmail(email);
         return customer != null ? new ResponseEntity<>(customer, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
-    {
-        Source source = sourceRepository.save(flight.getSource());
-        Destination destination = destinationRepository.save(flight.getDestination());
-        flight.setSource(source);
-        flight.setDestination(destination);
-        Flight f = flightRepository.save(flight);
-        return new ResponseEntity<>(f, HttpStatus.OK);
-    }
+//    @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
+//    {
+//        Source source = sourceRepository.save(flight.getSource());
+//        Destination destination = destinationRepository.save(flight.getDestination());
+//        flight.setSource(source);
+//        flight.setDestination(destination);
+//        Flight f = flightRepository.save(flight);
+//        return new ResponseEntity<>(f, HttpStatus.OK);
+//    }
 
     @GetMapping(value = "/flight/{flightId}")
     public ResponseEntity<Flight> get(@PathVariable Integer flightId)
     {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-        return optionalFlight.isPresent() ? new ResponseEntity<>(optionalFlight.get(), HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try
+        {
+            Flight flight = null;
+            if(Util.validateNumber(flightId)) flight = flightService.getFlightById(flightId);
+            return flight != null ? new ResponseEntity<>(flight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
     }
 
     @GetMapping(value = "/flights", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlights()
     {
-        return iterableToSet(flightRepository.findAll());
+        Set<Flight> flights = flightService.getFlights();
+        return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/flights/today", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByToday()
     {
-        return iterableToSet(flightRepository.findByCurrentDateTime(Util.toDBDateTime(LocalDateTime.now())));
+        Set<Flight> flights = flightService.getFlightsForToday();
+        return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // date format: mm-dd-yyyy
     @GetMapping(value = "/flights/{date}")
     public ResponseEntity<Set<Flight>> getFlightsByDate(@PathVariable String date)
     {
-        String[] parts = date.split("-");
-        LocalDateTime requestedDate = LocalDateTime.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[0]),
-                Integer.parseInt(parts[1]), 0, 0, 1);
-
-        return iterableToSet(flightRepository.findByDate(requestedDate));
+        try
+        {
+            Set<Flight> flights = flightService.getFlightsByDate(Util.stringDateToDateTime(date));
+            return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
-    @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
-    {
-        Set<Flight> flights = flightRepository.findByFare(fare);
-        return !flights.isEmpty() ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
+//    {
+//        Set<Flight> flights = flightRepository.findByFare(fare);
+//        return !flights.isEmpty() ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
-    // See Status class for supported value
     @GetMapping(value = "/flightsByStatus/{status}")
-    public ResponseEntity<Set<Flight>> getFlightsByStatus(@PathVariable Status status)
+    public ResponseEntity<Set<Flight>> getFlightsByStatus(@PathVariable String status)
     {
-        return iterableToSet(flightRepository.findFlightsByStatus(status));
+        try
+        {
+            Set<Flight> flights = flightService.getFlightsByStats(status);
+            return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @GetMapping(value = "/rsvps/customer/{customerId}")
     public ResponseEntity<Set<Reservation>> getAllRSVPsByCustomerId(@PathVariable Integer customerId)
     {
-        Iterable<Reservation> iterable = reservationRepository.findAllRSVPByCustomerId(customerId);
-        return iterableToReservationSet(iterable);
+        try
+        {
+            Set<Reservation> reservations = reservationService.getAllRSVPsByCustomerId(customerId);
+            return reservations != null ? new ResponseEntity<>(reservations, HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @GetMapping(value = "/rsvps/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPs()
     {
-        Iterable<Reservation> iterable = reservationRepository.findReservationsByStatus(Status.CANCELLED);
-        return iterableToReservationSet(iterable);
+        Set<Reservation> reservations = reservationService.getAllCancelledRSVPs();
+        return reservations != null ? new ResponseEntity<>(reservations, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/rsvps/{airline}/active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllActiveRSVPsByAirline(@PathVariable String airline)
     {
-        Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.ACTIVE.toString());
-        return iterableToReservationSet(iterable);
+        try
+        {
+            Set<Reservation> reservations = reservationService.getAllActiveRSVPsByAirline(airline);
+            return reservations != null ? new ResponseEntity<>(reservations, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @GetMapping(value = "/rsvps/{airline}/cancelled", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Reservation>> getAllCancelledRSVPsByAirline(@PathVariable String airline)
     {
-        Iterable<Reservation> iterable = reservationRepository.findActiveReservationsByAirline(airline, Status.CANCELLED.toString());
-        return iterableToReservationSet(iterable);
+        try
+        {
+            Set<Reservation> reservations = reservationService.getAllCancelledRSVPsByAirline(airline);
+            return reservations != null ? new ResponseEntity<>(reservations, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @PostMapping(value = "/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addRSVPByCustomerId(@RequestBody Map<String, Object> json)
     {
-        int customerId = -1;
-        int flightId = -1;
         try
         {
-            if(Util.verifyRSVPByCustomerId(json))
-            {
-                customerId = (Integer) json.get(Util.CUSTOMER_ID_JKEY);
-                Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-                if(!optionalCustomer.isPresent()) return new ResponseEntity<>("Customer does not exists with id="+customerId, HttpStatus.NOT_FOUND);
-                Customer customer = optionalCustomer.get();
-
-                flightId = (Integer)json.get(Util.FLIGHT_ID_JKEY);
-                Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-                if(!optionalFlight.isPresent()) return new ResponseEntity<>("Flight does not exists with id="+flightId, HttpStatus.NOT_FOUND);
-                Flight flight = optionalFlight.get();
-
-                reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
-
-                flight.getCustomers().add(customer);
-
-                flightRepository.save(flight);
-            }
+            return reservationService.addRSVPByCustomerId(json) ? new ResponseEntity<>(true, HttpStatus.OK) :
+                    new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
         catch (InvalidRequestException ex)
         {
             InvalidRequestExceptionResponse response = new InvalidRequestExceptionResponse(ex);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Successfully reserved a seat for customer_id="+customerId+" in flight_id="+flightId, HttpStatus.OK);
+        catch (NoSuchElementException ex)
+        {
+            InvalidRequestExceptionResponse response = new InvalidRequestExceptionResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping(value = "/cancel/rsvp/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
+    public ResponseEntity<Boolean> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
     {
-        Optional<Reservation> optionalReservation = reservationRepository.findById(rsvpId);
-        if(!optionalReservation.isPresent())
-            return new ResponseEntity<>("No reservation exists with id="+rsvpId, HttpStatus.NOT_FOUND);
-
-        Reservation reservation = optionalReservation.get();
-
-        reservation.setStatus(Status.CANCELLED);
-        reservation.getFlight().getCustomers().remove(reservation.getCustomer());
-
-        reservationRepository.save(reservation);
-        return new ResponseEntity<>("cancelled reservation id="+rsvpId, HttpStatus.OK);
-    }
-
-    private ResponseEntity<Set<Flight>> iterableToSet(Iterable<Flight> iterable)
-    {
-        if(iterable == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else {
-            Set<Flight> flights = new LinkedHashSet<>();
-            iterable.forEach(flight -> flights.add(flight));
-            if(flights.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(flights, HttpStatus.OK);
-        }
-    }
-
-    private ResponseEntity<Set<Reservation>> iterableToReservationSet(Iterable<Reservation> iterable)
-    {
-        if(iterable != null)
+        try
         {
-            Set<Reservation> reservations = new LinkedHashSet<>();
-            iterable.forEach(reservation -> reservations.add(reservation));
-            if(reservations.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
+            boolean isCancelled = reservationService.cancelRSVPByCustomerId(rsvpId);
+            return isCancelled ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 }

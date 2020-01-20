@@ -21,4 +21,10 @@ public class InvalidRequestExceptionResponse
         this.status = ex.getStatus();
         this.message = ex.getMessage();
     }
+
+    public InvalidRequestExceptionResponse(int status, String message)
+    {
+        this.status = status;
+        this.message = message;
+    }
 }

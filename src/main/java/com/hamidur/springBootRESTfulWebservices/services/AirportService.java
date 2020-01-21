@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AirportService
@@ -24,7 +25,15 @@ public class AirportService
 
     public Airport addAirport(Airport airport) throws IllegalArgumentException, NullPointerException
     {
-        if(Util.validateAirport(airport)) return airportRepository.save(airport);
+        if(Util.validateAirport(airport))
+        {
+            if(airport.getAirportId() != null && airport.getAirportId() > 0)
+            {
+                Optional<Airport> optional = airportRepository.findById(airport.getAirportId());
+                if(optional.isPresent()) throw new IllegalArgumentException("An airport already exist with id="+airport.getAirportId());
+            }
+            return airportRepository.save(airport);
+        }
         return null;
     }
 

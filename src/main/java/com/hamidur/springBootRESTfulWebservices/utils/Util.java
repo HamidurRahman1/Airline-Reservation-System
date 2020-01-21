@@ -108,7 +108,7 @@ public class Util
     public static boolean validateAirport(Airport airport)
     {
         if(airport == null) throw new NullPointerException("NULL argument given.");
-        if(airport.getAirportId() == null || airport.getAirportId() < 0) airport.setAirportId(null);
+        if(airport.getAirportId() == null || airport.getAirportId() <= 0) airport.setAirportId(null);
         if(airport.getAirportName() == null)
             throw new IllegalArgumentException("Airport name cannot be NULL.");
         if(airport.getAirportName().trim().toLowerCase().length() < 2)

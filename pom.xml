@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>com.hamidur</groupId>
-	<artifactId>RESTfulSpringBootMicroservice</artifactId>
+	<artifactId>SpringBootRESTfulWebservices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>SpringBootRESTfulWebservices</name>
 	<description>Demo project for Spring Boot RESTful webservices with complex Hibernate mapping</description>

@@ -144,17 +144,6 @@ public class RESTController
         return customer != null ? new ResponseEntity<>(customer, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-//    @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
-//    {
-//        Source source = sourceRepository.save(flight.getSource());
-//        Destination destination = destinationRepository.save(flight.getDestination());
-//        flight.setSource(source);
-//        flight.setDestination(destination);
-//        Flight f = flightRepository.save(flight);
-//        return new ResponseEntity<>(f, HttpStatus.OK);
-//    }
-
     @GetMapping(value = "/flight/{flightId}")
     public ResponseEntity<Flight> get(@PathVariable Integer flightId)
     {
@@ -268,6 +257,13 @@ public class RESTController
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }
+    }
+
+    @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
+    {
+        Flight addedFlight = flightService.insertFlight(flight);
+        return new ResponseEntity<>(addedFlight, HttpStatus.OK);
     }
 
     @PostMapping(value = "/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

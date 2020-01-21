@@ -22,7 +22,7 @@ public class FlightService
         this.flightRepository = flightRepository;
     }
 
-    public Flight saveFlight(Flight flight)
+    public Flight insertFlight(Flight flight)
     {
         return flightRepository.save(flight);
     }

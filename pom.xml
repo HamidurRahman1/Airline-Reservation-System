@@ -13,8 +13,8 @@
 	<groupId>com.hamidur</groupId>
 	<artifactId>RESTfulSpringBootMicroservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>RESTfulSpringBootMicroservice</name>
-	<description>Demo project for Spring Boot RESTful microservice with complex Hibernate mapping</description>
+	<name>SpringBootRESTfulWebservices</name>
+	<description>Demo project for Spring Boot RESTful webservices with complex Hibernate mapping</description>
 
 	<properties>
 		<java.version>1.8</java.version>

@@ -1,6 +1,7 @@
 package com.hamidur.springBootRESTfulWebservices.utils;
 
 import com.hamidur.springBootRESTfulWebservices.errors.InvalidRequestException;
+import com.hamidur.springBootRESTfulWebservices.models.Airport;
 import com.hamidur.springBootRESTfulWebservices.models.Status;
 import org.springframework.http.HttpStatus;
 
@@ -102,5 +103,16 @@ public class Util
         else if(status.trim().equalsIgnoreCase(Status.CANCELLED.toString()))
             return Status.CANCELLED;
         else throw new IllegalArgumentException("Invalid status provided. status=ON_TIME or CANCELLED");
+    }
+
+    public static boolean validateAirport(Airport airport)
+    {
+        if(airport == null) throw new NullPointerException("NULL argument given.");
+        if(airport.getAirportId() == null || airport.getAirportId() < 0) airport.setAirportId(null);
+        if(airport.getAirportName() == null)
+            throw new IllegalArgumentException("Airport name cannot be NULL.");
+        if(airport.getAirportName().trim().toLowerCase().length() < 2)
+            throw new IllegalArgumentException("Airport name is too short, must be at least 2");
+        return true;
     }
 }

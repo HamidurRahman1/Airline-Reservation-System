@@ -2,8 +2,11 @@ package com.hamidur.springBootRESTfulWebservices.services;
 
 import com.hamidur.springBootRESTfulWebservices.models.Airport;
 import com.hamidur.springBootRESTfulWebservices.repos.AirportRepository;
+import com.hamidur.springBootRESTfulWebservices.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +20,12 @@ public class AirportService
     public AirportService(final AirportRepository airportRepository)
     {
         this.airportRepository = airportRepository;
+    }
+
+    public Airport addAirport(Airport airport) throws IllegalArgumentException, NullPointerException
+    {
+        if(Util.validateAirport(airport)) return airportRepository.save(airport);
+        return null;
     }
 
     public List<Airport> getAirports()

@@ -62,7 +62,7 @@ public class ReservationService
 
             flight.getCustomers().add(customer);
 
-            Flight updated = flightService.saveFlight(flight);
+            Flight updated = flightService.addFlight(flight);
             return updated.getFlightId().equals(flight.getFlightId());
         }
         return false;

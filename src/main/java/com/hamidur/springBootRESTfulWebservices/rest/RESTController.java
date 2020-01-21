@@ -262,7 +262,7 @@ public class RESTController
     @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
     {
-        Flight addedFlight = flightService.insertFlight(flight);
+        Flight addedFlight = flightService.addFlight(flight);
         return new ResponseEntity<>(addedFlight, HttpStatus.OK);
     }
 
@@ -284,6 +284,13 @@ public class RESTController
             InvalidRequestExceptionResponse response = new InvalidRequestExceptionResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping(value = "/airport", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Airport> addAirport(@RequestBody Airport airport)
+    {
+        Airport addedAirport = airportService.addAirport(airport);
+        return addedAirport != null ? new ResponseEntity<>(airport, HttpStatus.CREATED) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/cancel/rsvp/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)

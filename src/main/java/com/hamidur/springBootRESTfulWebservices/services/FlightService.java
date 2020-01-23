@@ -24,6 +24,12 @@ public class FlightService
 
     public Flight addFlight(Flight flight)
     {
+        if(Util.validateFlight(flight) && flight.getFlightId() != null && flight.getFlightId() > 0)
+        {
+            Optional<Flight> optional = flightRepository.findById(flight.getFlightId());
+            if(optional.isPresent()) throw new IllegalArgumentException("A flight already exist with id="+flight.getFlightId());
+        }
+        flight.setStatus(Status.ON_TIME);
         return flightRepository.save(flight);
     }
 

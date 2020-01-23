@@ -262,8 +262,22 @@ public class RESTController
     @PostMapping(value = "/flight", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Flight> insertFlight(@RequestBody Flight flight)
     {
-        Flight addedFlight = flightService.addFlight(flight);
-        return new ResponseEntity<>(addedFlight, HttpStatus.OK);
+        try
+        {
+            return new ResponseEntity<>(flightService.addFlight(flight), HttpStatus.OK);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+        catch (NullPointerException ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+        catch (Exception ex)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @PostMapping(value = "/rsvp/customer", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

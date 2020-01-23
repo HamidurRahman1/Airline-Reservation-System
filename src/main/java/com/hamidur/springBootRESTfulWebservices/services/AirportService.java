@@ -25,16 +25,12 @@ public class AirportService
 
     public Airport addAirport(Airport airport) throws IllegalArgumentException, NullPointerException
     {
-        if(Util.validateAirport(airport))
+        if(Util.validateAirport(airport) && airport.getAirportId() != null && airport.getAirportId() > 0)
         {
-            if(airport.getAirportId() != null && airport.getAirportId() > 0)
-            {
-                Optional<Airport> optional = airportRepository.findById(airport.getAirportId());
-                if(optional.isPresent()) throw new IllegalArgumentException("An airport already exist with id="+airport.getAirportId());
-            }
-            return airportRepository.save(airport);
+            Optional<Airport> optional = airportRepository.findById(airport.getAirportId());
+            if(optional.isPresent()) throw new IllegalArgumentException("An airport already exist with id="+airport.getAirportId());
         }
-        return null;
+        return airportRepository.save(airport);
     }
 
     public List<Airport> getAirports()

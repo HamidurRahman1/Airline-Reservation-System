@@ -46,12 +46,13 @@ public class FlightService
 
     public Set<Flight> getFlightsForToday()
     {
-        return iterableToSet(flightRepository.findByCurrentDateTime(Util.toDBDateTime(LocalDateTime.now())));
+        LocalDateTime dateTime1 = Util.toDBDateTime(LocalDateTime.now());
+        return iterableToSet(flightRepository.findByCurrentDateTime(dateTime1, dateTime1.plusHours(23)));
     }
 
     public Set<Flight> getFlightsByDate(LocalDateTime localDateTime)
     {
-        return iterableToSet(flightRepository.findByCurrentDateTime(Util.toDBDateTime(localDateTime)));
+        return iterableToSet(flightRepository.findByDate(Util.toDBDateTime(localDateTime)));
     }
 
     public Set<Flight> getFlightsByStats(String status)

@@ -1,7 +1,8 @@
 package com.hamidur.springBootRESTfulWebservices.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,11 +32,11 @@ public class Reservation
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-    @JsonManagedReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "flight_id", referencedColumnName = "flight_id")
     private Flight flight;
-    @JsonManagedReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;

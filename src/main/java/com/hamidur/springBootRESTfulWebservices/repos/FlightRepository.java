@@ -15,8 +15,9 @@ public interface FlightRepository extends CrudRepository<Flight, Integer>
 {
     // native query - MySQL
     @Query(value = "select * from flights f inner join sources s" +
-                    " on s.source_id = f.source_id and s.date_time >= :date_time", nativeQuery = true)
-    Set<Flight> findByCurrentDateTime(@Param("date_time") LocalDateTime dateTime);
+                    " on s.source_id = f.source_id and s.date_time >= :date_time1 and s.date_time < :date_time2", nativeQuery = true)
+    Set<Flight> findByCurrentDateTime(@Param("date_time1") LocalDateTime dateTime1,
+                                      @Param("date_time2") LocalDateTime dateTime2);
 
     // native query - MySQL
     @Query(value = "select * from flights f inner join sources s" +

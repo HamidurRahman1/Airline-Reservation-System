@@ -144,6 +144,13 @@ public class RESTController
         return customer != null ? new ResponseEntity<>(customer, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/flights", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Flight>> getFlights()
+    {
+        Set<Flight> flights = flightService.getFlights();
+        return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping(value = "/flight/{flightId}")
     public ResponseEntity<Flight> get(@PathVariable Integer flightId)
     {
@@ -157,13 +164,6 @@ public class RESTController
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }
-    }
-
-    @GetMapping(value = "/flights", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Flight>> getFlights()
-    {
-        Set<Flight> flights = flightService.getFlights();
-        return flights != null ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/flights/today", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -187,14 +187,14 @@ public class RESTController
         }
     }
 
-    @GetMapping(value = "/flightsByFare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/flights/fare/{fare}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Flight>> getFlightsByFare(@PathVariable Float fare)
     {
         Set<Flight> flights = flightService.getFlightsByFare(fare);
         return flights != null && !flights.isEmpty() ? new ResponseEntity<>(flights, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value = "/flightsByStatus/{status}")
+    @GetMapping(value = "/flights/status/{status}")
     public ResponseEntity<Set<Flight>> getFlightsByStatus(@PathVariable String status)
     {
         try

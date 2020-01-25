@@ -1,6 +1,6 @@
 package com.hamidur.springBootRESTfulWebservices.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,11 +28,11 @@ public class Customer
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @JsonBackReference
+    @JsonIgnore
     @ManyToMany(mappedBy = "customers")
     private Set<Flight> flights;
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "customer")
     private Set<Reservation> reservations;
 

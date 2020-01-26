@@ -58,6 +58,7 @@ public class ReservationService
             Flight flight = flightService.getFlightById(flightId);
             if(flight == null) throw new NoSuchElementException("Flight does not exists with id="+flightId);
 
+            if(flight.getStatus().equalsIgnoreCase(Status.CANCELLED.toString())) throw new IllegalArgumentException("Cannot rsvp to a cancelled flight.");
             if(flight.getCapacity() > flight.getCustomers().size())
             {
                 reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);

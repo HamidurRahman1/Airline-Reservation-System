@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,5 +44,18 @@ public class CustomerService
     {
         if(Util.validateEmail(email)) return customerRepository.findByEmailIgnoreCase(email);
         return null;
+    }
+
+    public boolean deleteCustomerById(Integer customerId) throws IllegalArgumentException, NoSuchElementException
+    {
+        if(Util.validateNumber(customerId))
+        {
+            Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+            if(!optionalCustomer.isPresent())
+                throw new NoSuchElementException("Customer does not exists with id="+customerId);
+            customerRepository.deleteCustomerByCustomerId(customerId);
+            return true;
+        }
+        return false;
     }
 }

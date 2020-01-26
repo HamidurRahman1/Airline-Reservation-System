@@ -54,7 +54,11 @@ public class FlightService
             else
             {
                 Flight flight = optionalFlight.get();
-                if(flight.getCustomers().size() <= 0) return true;
+                if(flight.getCustomers().size() <= 0)
+                {
+                    flightRepository.changeFlightStatus(Status.CANCELLED.toString(), flightId);
+                    return true;
+                }
                 else
                 {
                     flightRepository.deleteCustomersRSVPsByFlightId(flightId, Status.CANCELLED.toString());

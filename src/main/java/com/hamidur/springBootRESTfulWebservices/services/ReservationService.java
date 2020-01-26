@@ -8,6 +8,7 @@ import com.hamidur.springBootRESTfulWebservices.models.Status;
 import com.hamidur.springBootRESTfulWebservices.repos.ReservationRepository;
 import com.hamidur.springBootRESTfulWebservices.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -58,7 +59,8 @@ public class ReservationService
             Flight flight = flightService.getFlightById(flightId);
             if(flight == null) throw new NoSuchElementException("Flight does not exists with id="+flightId);
 
-            if(flight.getStatus().equalsIgnoreCase(Status.CANCELLED.toString())) throw new IllegalArgumentException("Cannot rsvp to a cancelled flight.");
+            if(flight.getStatus().equalsIgnoreCase(Status.CANCELLED.toString()))
+                throw new InvalidRequestException(HttpStatus.CHECKPOINT.value(), "Cannot rsvp to a cancelled flight.");
             if(flight.getCapacity() > flight.getCustomers().size())
             {
                 reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
@@ -66,7 +68,7 @@ public class ReservationService
                 Flight updated = flightService.updateFlight(flight);
                 return updated.getFlightId().equals(flight.getFlightId());
             }
-            else throw new IllegalArgumentException("Flight is full. Cannot do rsvp.");
+            else throw new InvalidRequestException(HttpStatus.EXPECTATION_FAILED.value(),"Flight is full. Cannot do rsvp.");
         }
         return false;
     }

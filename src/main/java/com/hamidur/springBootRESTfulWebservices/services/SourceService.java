@@ -19,10 +19,14 @@ public class SourceService
         this.sourceRepository = sourceRepository;
     }
 
-    public Source getSourceById(Integer sourceId)
+    public Source getSourceById(Integer sourceId) throws IllegalArgumentException
     {
-        Optional<Source> source = sourceRepository.findById(sourceId);
-        return source.isPresent() ? source.get() : null;
+        if(Util.validateNumber(sourceId))
+        {
+            Optional<Source> source = sourceRepository.findById(sourceId);
+            return source.isPresent() ? source.get() : null;
+        }
+        return null;
     }
 
     public Source addSource(Source source) throws IllegalArgumentException

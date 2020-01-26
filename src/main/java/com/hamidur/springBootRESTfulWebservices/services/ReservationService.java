@@ -58,12 +58,14 @@ public class ReservationService
             Flight flight = flightService.getFlightById(flightId);
             if(flight == null) throw new NoSuchElementException("Flight does not exists with id="+flightId);
 
-            reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
-
-            flight.getCustomers().add(customer);
-
-            Flight updated = flightService.addFlight(flight);
-            return updated.getFlightId().equals(flight.getFlightId());
+            if(flight.getCapacity() > flight.getCustomers().size())
+            {
+                reservationRepository.insertRSVPByCustomerId(Util.toDBDateTime(LocalDateTime.now()), Status.ACTIVE.toString(), customerId, flightId);
+                flight.getCustomers().add(customer);
+                Flight updated = flightService.updateFlight(flight);
+                return updated.getFlightId().equals(flight.getFlightId());
+            }
+            else throw new IllegalArgumentException("Flight is full. Cannot do rsvp.");
         }
         return false;
     }

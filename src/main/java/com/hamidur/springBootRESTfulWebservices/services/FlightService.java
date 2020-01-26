@@ -46,7 +46,18 @@ public class FlightService
     public Flight getFlightById(Integer flightId)
     {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-        return optionalFlight.isPresent() ? optionalFlight.get() : null;
+        if(optionalFlight.isPresent())
+        {
+            Flight flight = optionalFlight.get();
+            flight.setAvailableSeat(flight.getCapacity()-flight.getCustomers().size());
+            return flight;
+        }
+        return null;
+    }
+
+    public Flight updateFlight(Flight flight)
+    {
+        return flightRepository.save(flight);
     }
 
     public Set<Flight> getFlights()

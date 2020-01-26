@@ -288,6 +288,11 @@ public class RESTController
             return reservationService.addRSVPByCustomerId(json) ? new ResponseEntity<>(true, HttpStatus.OK) :
                     new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         }
+        catch (IllegalArgumentException ex)
+        {
+            InvalidRequestException response = new InvalidRequestException(HttpStatus.CHECKPOINT.value(), ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.CHECKPOINT);
+        }
         catch (InvalidRequestException ex)
         {
             InvalidRequestExceptionResponse response = new InvalidRequestExceptionResponse(ex);
@@ -307,7 +312,7 @@ public class RESTController
         return addedAirport != null ? new ResponseEntity<>(airport, HttpStatus.CREATED) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/cancel/rsvp/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/rsvp/cancel/{rsvpId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> cancelRSVPByCustomerId(@PathVariable Integer rsvpId)
     {
         try

@@ -1,8 +1,12 @@
 package com.hamidur.springBootRESTfulWebservices.services;
 
+import com.hamidur.springBootRESTfulWebservices.models.Source;
 import com.hamidur.springBootRESTfulWebservices.repos.SourceRepository;
+import com.hamidur.springBootRESTfulWebservices.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SourceService
@@ -15,5 +19,18 @@ public class SourceService
         this.sourceRepository = sourceRepository;
     }
 
+    public Source getSourceById(Integer sourceId)
+    {
+        Optional<Source> source = sourceRepository.findById(sourceId);
+        return source.isPresent() ? source.get() : null;
+    }
 
+    public Source addSource(Source source) throws IllegalArgumentException
+    {
+        if(Util.validateSource(source))
+        {
+            return sourceRepository.save(source);
+        }
+        return null;
+    }
 }

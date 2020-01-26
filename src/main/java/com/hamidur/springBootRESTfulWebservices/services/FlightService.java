@@ -1,6 +1,7 @@
 package com.hamidur.springBootRESTfulWebservices.services;
 
 import com.hamidur.springBootRESTfulWebservices.models.Flight;
+import com.hamidur.springBootRESTfulWebservices.models.Source;
 import com.hamidur.springBootRESTfulWebservices.models.Status;
 import com.hamidur.springBootRESTfulWebservices.repos.FlightRepository;
 import com.hamidur.springBootRESTfulWebservices.utils.Util;
@@ -15,11 +16,16 @@ import java.util.Set;
 public class FlightService
 {
     private final FlightRepository flightRepository;
+    private final SourceService sourceService;
+    private final DestinationService destinationService;
 
     @Autowired
-    public FlightService(final FlightRepository flightRepository)
+    public FlightService(final FlightRepository flightRepository, final SourceService sourceService,
+                         final DestinationService destinationService)
     {
         this.flightRepository = flightRepository;
+        this.destinationService = destinationService;
+        this.sourceService = sourceService;
     }
 
     public Flight addFlight(Flight flight)
@@ -29,6 +35,7 @@ public class FlightService
             Optional<Flight> optional = flightRepository.findById(flight.getFlightId());
             if(optional.isPresent()) throw new IllegalArgumentException("A flight already exist with id="+flight.getFlightId());
         }
+        Source source =
         flight.setStatus(Status.ON_TIME);
         return flightRepository.save(flight);
     }

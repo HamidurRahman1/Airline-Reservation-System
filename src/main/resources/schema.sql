@@ -38,7 +38,7 @@ create table flights
     airplane_id int not null,
     fare decimal(5, 2) not null,
     capacity int not null,
-    status varchar(8) not null,
+    status varchar(9) not null,
     foreign key (source_id) references sources (source_id),
     foreign key (destination_id) references destinations (destination_id),
     foreign key (airplane_id) references airplanes (airplane_id));

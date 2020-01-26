@@ -325,4 +325,11 @@ public class RESTController
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }
     }
+
+    @PutMapping(value = "/flight/cancel/{flightId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> cancelFlightById(@PathVariable Integer flightId)
+    {
+        if(!Util.validateNumber(flightId)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return flightService.cancelFlight(flightId) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.EXPECTATION_FAILED);
+    }
 }

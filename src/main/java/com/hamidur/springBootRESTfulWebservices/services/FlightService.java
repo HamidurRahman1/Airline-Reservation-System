@@ -7,6 +7,8 @@ import com.hamidur.springBootRESTfulWebservices.repos.FlightRepository;
 import com.hamidur.springBootRESTfulWebservices.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -41,6 +43,26 @@ public class FlightService
         Flight addedFlight = flightRepository.save(flight);
         addedFlight.setAvailableSeat(addedFlight.getCapacity());
         return addedFlight;
+    }
+
+    public boolean cancelFlight(Integer flightId) throws IllegalArgumentException
+    {
+        if(Util.validateNumber(flightId))
+        {
+            Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+            if(!optionalFlight.isPresent()) throw new IllegalArgumentException("Flight does not exists with id="+flightId);
+            else
+            {
+                Flight flight = optionalFlight.get();
+                if(flight.getCustomers().size() <= 0) return true;
+                else
+                {
+                    flightRepository.deleteCustomersRSVPsByFlightId(flightId, Status.CANCELLED.toString());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Flight getFlightById(Integer flightId)

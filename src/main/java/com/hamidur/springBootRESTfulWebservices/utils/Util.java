@@ -56,40 +56,40 @@ public class Util
                 dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
     }
 
-    public static boolean validateAirlineName(String airlineName)
+    public static boolean validateAirlineName(String airlineName) throws IllegalArgumentException
     {
         if(airlineName == null || airlineName.trim().toLowerCase().isEmpty())
             throw new IllegalArgumentException("Invalid input for airline name.");
         return true;
     }
 
-    public static boolean validateAirportName(String airportName)
+    public static boolean validateAirportName(String airportName) throws IllegalArgumentException
     {
         if(airportName == null || airportName.trim().toLowerCase().isEmpty())
             throw new IllegalArgumentException("Invalid input for airport name.");
         return true;
     }
 
-    public static boolean validateEmail(String airportName)
+    public static boolean validateEmail(String airportName) throws IllegalArgumentException
     {
         if(airportName == null || airportName.trim().toLowerCase().isEmpty())
             throw new IllegalArgumentException("Invalid input for email.");
         return true;
     }
 
-    public static boolean validateNumber(Integer number)
+    public static boolean validateNumber(Integer number) throws IllegalArgumentException
     {
         if(number >= 0) return true;
         else throw new IllegalArgumentException("Invalid number provided.");
     }
 
-    public static boolean validateNumber(Float number)
+    public static boolean validateNumber(Float number) throws IllegalArgumentException
     {
         if(number > 0.0) return true;
         else throw new IllegalArgumentException("Invalid number provided.");
     }
 
-    public static LocalDateTime stringDateToDateTime(String dateTime)
+    public static LocalDateTime stringDateToDateTime(String dateTime) throws IllegalArgumentException
     {
         try
         {
@@ -123,7 +123,7 @@ public class Util
         }
     }
 
-    public static Status validateFlightStatus(String status)
+    public static Status validateFlightStatus(String status) throws IllegalArgumentException
     {
         if(status.trim().equalsIgnoreCase(Status.ON_TIME.toString()))
             return Status.ON_TIME;
@@ -132,7 +132,7 @@ public class Util
         else throw new IllegalArgumentException("Invalid status provided. status=ON_TIME or CANCELLED");
     }
 
-    public static boolean validateAirport(Airport airport)
+    public static boolean validateAirport(Airport airport) throws IllegalArgumentException
     {
         if(airport == null) throw new NullPointerException("NULL argument given.");
         if(airport.getAirportId() == null || airport.getAirportId() <= 0) airport.setAirportId(null);
@@ -143,7 +143,7 @@ public class Util
         return true;
     }
 
-    public static boolean validateFlight(Flight flight)
+    public static boolean validateFlight(Flight flight) throws IllegalArgumentException
     {
         if(flight == null) throw new NullPointerException("NULL flight.");
         if(flight.getFlightId() == null || flight.getFlightId() <= 0) flight.setFlightId(null);
@@ -151,6 +151,9 @@ public class Util
             throw new IllegalArgumentException("Invalid flight code provided.");
         if(validateSource(flight.getSource()) && validateDestination(flight.getDestination()) && validateAirplane(flight.getAirplane()))
         {
+            if(hasAirportLoop(flight.getSource(), flight.getDestination())) throw new IllegalArgumentException("Airports are same.");
+            if(!isArrivalAfterDeparture(flight.getSource().getDepartureDateTime(), flight.getDestination().getArrivalDateTime()))
+                throw new IllegalArgumentException("Arrival time is same or before departure time.");
             if(flight.getFare() == null || flight.getFare() <= 0) throw new IllegalArgumentException("Invalid fare.");
             if(flight.getCapacity() == null || flight.getCapacity() <= 0) throw new IllegalArgumentException("Invalid capacity.");
             return true;
@@ -158,7 +161,7 @@ public class Util
         return false;
     }
 
-    public static boolean validateAirplane(Airplane airplane)
+    public static boolean validateAirplane(Airplane airplane) throws IllegalArgumentException
     {
         if(airplane == null) throw new NullPointerException("NULL argument given.");
         if(airplane.getAirplaneId() == null || airplane.getAirplaneId() <= 0) airplane.setAirplaneId(null);
@@ -169,7 +172,7 @@ public class Util
         return validateAirline(airplane.getAirline());
     }
 
-    public static boolean validateAirline(Airline airline)
+    public static boolean validateAirline(Airline airline) throws IllegalArgumentException
     {
         if(airline == null) throw new NullPointerException("NULL argument given.");
         if(airline.getAirlineId() == null || airline.getAirlineId() <= 0) airline.setAirlineId(null);
@@ -180,7 +183,7 @@ public class Util
         return true;
     }
 
-    public static boolean validateSource(Source source)
+    public static boolean validateSource(Source source) throws IllegalArgumentException
     {
         if(source == null) throw new NullPointerException("NULL source");
         if(source.getSourceId() == null || source.getSourceId() <= 0) source.setSourceId(null);
@@ -189,12 +192,22 @@ public class Util
         return validateAirport(source.getAirport());
     }
 
-    public static boolean validateDestination(Destination destination)
+    public static boolean validateDestination(Destination destination) throws IllegalArgumentException
     {
         if(destination == null) throw new NullPointerException("NULL destination");
         if(destination.getDestinationId() == null || destination.getDestinationId() <= 0) destination.setDestinationId(null);
         if(destination.getArrivalDateTime() == null)
             throw new IllegalArgumentException("Invalid arrival datetime.");
         return validateAirport(destination.getAirport());
+    }
+
+    public static boolean hasAirportLoop(Source source, Destination destination)
+    {
+        return source.getAirport().getAirportName().trim().equalsIgnoreCase(destination.getAirport().getAirportName().trim());
+    }
+
+    public static boolean isArrivalAfterDeparture(LocalDateTime departureDateTime, LocalDateTime arrivalDateTime)
+    {
+        return arrivalDateTime.isAfter(departureDateTime);
     }
 }

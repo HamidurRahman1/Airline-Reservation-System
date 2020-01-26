@@ -28,16 +28,19 @@ public class FlightService
         this.sourceService = sourceService;
     }
 
-    public Flight addFlight(Flight flight)
+    public Flight addFlight(Flight flight) throws IllegalArgumentException
     {
         if(Util.validateFlight(flight) && flight.getFlightId() != null && flight.getFlightId() > 0)
         {
             Optional<Flight> optional = flightRepository.findById(flight.getFlightId());
             if(optional.isPresent()) throw new IllegalArgumentException("A flight already exist with id="+flight.getFlightId());
         }
-        Source source =
         flight.setStatus(Status.ON_TIME);
-        return flightRepository.save(flight);
+        flight.setSource(sourceService.addSource(flight.getSource()));
+        flight.setDestination(destinationService.addDestination(flight.getDestination()));
+        Flight addedFlight = flightRepository.save(flight);
+        addedFlight.setAvailableSeat(addedFlight.getCapacity());
+        return addedFlight;
     }
 
     public Flight getFlightById(Integer flightId)
